@@ -770,10 +770,9 @@ h5 {
   width: 26%;
   height: 15px;
   font-family: "Source Code Pro", monospace;
-  font-size: 12px;
-    background: #1a1a1d;
-  color: #C3073F;
-  font-weight:  800;
+  font-size: 13px;
+    background: white;
+  font-weight: 500;
 }
 
 .input-bar input:focus {
@@ -820,7 +819,7 @@ img {
 
 .collab-wrap {
   margin-top: 20px;
-  border: 2px solid white;
+  border: 2px solid black;
   height: 155px;
   width: 200px;
 }
@@ -831,8 +830,8 @@ textarea {
   width: 175px;
   height: 245px;
   font-family: "Source Code Pro", monospace;
-    background: #1a1a1d;
-  color: white;
+    background: white;
+  color: black;
 }
 
 textarea:focus {
@@ -901,10 +900,10 @@ h2 {
 }
 
 .bonus {
-  border: 2px solid white;
+  border: 2px solid black;
   position: absolute;
   z-index: 10;
-  background: #1a1a1d;
+  background: white;
   padding: 5px;
   text-align: center;
   visibility: hidden;
@@ -1009,7 +1008,7 @@ h6 {
 }
 
 .collab-top-bar {
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid black;
   display: flex;
   height: 40px;
   flex-direction: row;
@@ -1018,7 +1017,6 @@ h6 {
 }
 
 ::placeholder {
-  color: #950740;
   font-weight: 600;
 }
 
@@ -1062,13 +1060,11 @@ h6 {
   height: 26px;
   width: 168px;
   margin-top: 13px;
-  border: 2px solid white;
+  border: 2px solid black;
   padding-left: 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
-    background: #1a1a1d;
-
 }
 
 .collab-input textarea {
@@ -1077,7 +1073,7 @@ h6 {
   white-space: nowrap;
   overflow-wrap: normal;
   overflow-x: hidden;
-    background: #1a1a1d;
+    background: white;
 
 }
 

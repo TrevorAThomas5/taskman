@@ -112,7 +112,5 @@ h1 {
 
 body {
   overflow: hidden;
-  background: #0B1319;
-  color: white;
 }
 </style>
