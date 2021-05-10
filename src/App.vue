@@ -2,7 +2,8 @@
   <div id="app">
     <img class="robot" src="/robot.svg" />
     <h1>taskman</h1>
-    <Login v-if="login" :login="loginClick" />
+    <Login v-if="page == 'login'" :login="loginClick" :accountSwitch='accountSwitch' />
+    <NewAccount v-else-if="page == 'account'" :login="loginClick" :logout='logout' />
     <TaskMan
       v-else
       :projectsProp="projectsProp"
@@ -16,17 +17,19 @@
 <script>
 import TaskMan from "./components/TaskMan.vue";
 import Login from "./components/Login.vue";
+import NewAccount from "./components/NewAccount.vue";
 import axios from "axios";
 
 export default {
   name: "App",
   components: {
     TaskMan,
-    Login
+    Login,
+    NewAccount,
   },
   data: function() {
     return {
-      login: true,
+      page: 'login',
       projectsProp: [],
       userid: 0,
       projectsLoaded: 0,
@@ -34,11 +37,14 @@ export default {
     };
   },
   methods: {
+    accountSwitch() {
+      this.page = 'account';
+    },
     logout() {
       this.projectsProp = [];
       this.projectsLoaded = 0;
       this.userid = 0;
-      this.login = true;
+      this.page = 'login';
     },
     loginClick(userData) {
       // set userid
@@ -51,7 +57,7 @@ export default {
       const projects = JSON.parse(userData.projects);
 
       // if the user has no projects
-      if (projects.length <= 0) app.login = false;
+      if (projects.length <= 0) app.page = 'main';
 
       for (const key in projects) {
         const id = projects[key];
@@ -71,7 +77,7 @@ export default {
             }
             if (app.projectsLoaded == Object.keys(projects).length) {
               // go to the main application page
-              app.login = false;
+              app.page = 'main';
               app.projectsLoaded = 0;
             }
           })

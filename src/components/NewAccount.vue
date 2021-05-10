@@ -1,14 +1,14 @@
 <template>
 <div class='all-wrap'>
 <div class='login-wrap'>
-    <h2>account login</h2>
+    <h2>make account</h2>
     <input v-model='username' placeholder="username" v-on:keyup='enterPress'/>
     <input v-model='password' placeholder='password' type='password' v-on:keyup='enterPress'/>
-    <button v-on:click='loginClick'>login</button>
+    <button v-on:click='newAccountClick'>create</button>
 </div>
-  <div class='bot-wrap'>
-      <h3>Don't have an account?</h3>
-      <h3 v-on:click='accountSwitch' class='create'>Create one</h3>
+    <div class='bot-wrap'>
+      <h3>Already have an account?</h3>
+      <h3 v-on:click='logout' class='create'>Login</h3>
   </div>
 </div>
 </template>
@@ -22,7 +22,7 @@ export default {
   },
   props: {
       login: Function,
-      accountSwitch: Function,
+      logout: Function,
   },
   data: function() {
     return {
@@ -33,13 +33,14 @@ export default {
   methods: {
     enterPress(e) {
       if(e.keyCode == 13)
-        this.loginClick();
+        this.newAccountClick();
     },
-    loginClick() {
+    newAccountClick() {
       var username = this.username;
       var password = this.password;
       var login = this.login;
-      axios.get('http://taskman.hanaroenterprise.com/api/login.php',
+
+      axios.get('http://taskman.hanaroenterprise.com/api/newaccount.php',
       {
         params: {
           'username': username,
@@ -52,7 +53,7 @@ export default {
         if(userData != 404) 
           login(userData);
         else
-          alert('Your username or password is incorrect!');
+          alert('This username has already been taken!');
       })
       .catch(function(error) {
         console.log(error);
@@ -74,20 +75,6 @@ export default {
     height: 235px;
 }
 
-.all-wrap {
-      position: fixed;
-left: 50vw;
-    top: 50vh;
-        transform: translate(-50%, -50%);
-}
-
-.bot-wrap {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
 input {
   padding: 10px;
   border: 2px solid black;
@@ -106,22 +93,6 @@ h2 {
     font-weight: 400;
 }
 
-h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.create {
-  margin-left: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.create:hover {
-  filter: drop-shadow(0px 0px 1px black);
-}
-
 button {
   border: 2px solid black;
   width: 220px;
@@ -137,6 +108,37 @@ button {
 button:hover {
     background: #222222;
     
+}
+
+
+.all-wrap {
+      position: fixed;
+left: 50vw;
+    top: 50vh;
+        transform: translate(-50%, -50%);
+}
+
+.bot-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.create {
+  margin-left: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.create:hover {
+  filter: drop-shadow(0px 0px 1px black);
 }
 
 </style>
