@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin: *');
 // connect to the database
 $host = 'localhost';
 $user = $USERNAME;
-$password $PASSWORD; 
+$password = $PASSWORD; 
 $dbname = 'taskman';
 
 $con = mysqli_connect($host, $user, $password, $dbname);

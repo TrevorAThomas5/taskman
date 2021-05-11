@@ -32,7 +32,7 @@
           <div class="input-bar">
             <input v-model="name" placeholder="Task Name..." type="text" />
             <input v-model="category" placeholder="Project..." type="text" />
-            <input v-model="date" placeholder="Date..." type="text" />
+            <input v-model="date" placeholder="YYYY-MM-DD..." type="text" />
 
             <div class="add" v-on:click="addTask">
               <div class="bonus-wrap">
@@ -72,6 +72,7 @@
           <h5>Description</h5>
           <div class="des-wrap">
             <textarea
+              spellcheck='false'
               placeholder="Type here to give this task a description..."
               v-model="desc"
               v-on:change="descChange"
@@ -138,7 +139,7 @@
     <div v-else class="wrap">
       <div>
         <div class="header">
-          <h2>TASKS</h2>
+          <h2>ACTIVITY LOG</h2>
           <h5 class="today">{{ today }}</h5>
 
           <div id="moon-wrap" class="bonus-wrap">
@@ -165,57 +166,7 @@
 
         <div class="tasklist-wrap">
           <div class="tasks">
-            <h3>Today</h3>
-            <div class="day-wrap">
-              <div class="proj-wrap">
-                <h4>Work</h4>
-                <h6>
-                  Fixed Catinal MySQL injection problem. Met with Phil. Added
-                  activity log feature to TaskMan. Changed resume to include
-                  Catinal and Taskman. Add TaskMan to my porfolio website.
-                </h6>
-              </div>
-
-              <div>
-                <div class="proj-wrap">
-                  <h4>School</h4>
-                  <h6>Finished my CSE 107 homework due Friday.</h6>
-                </div>
-
-                <div class="proj-wrap">
-                  <h4>Personal</h4>
-                  <h6>
-                    Ran 2 miles. Got groceries for the week. Bought Gina's
-                    birthday gifts.
-                  </h6>
-                </div>
-              </div>
-            </div>
-
-            <h3>2021-04-28</h3>
-            <div class="day-wrap">
-              <div>
-                <div class="proj-wrap">
-                  <h4>Work</h4>
-                  <h6>
-                    Add new icons and buttons to TaskMan. Added the "TASKS"
-                    title to the tasks section of TaskMan.
-                  </h6>
-                </div>
-                <div class="proj-wrap">
-                  <h4>School</h4>
-                  <h6>Took my CSE 107 quiz.</h6>
-                </div>
-              </div>
-
-              <div class="proj-wrap">
-                <h4>Personal</h4>
-                <h6>
-                  Got 5 Guys for the first time. Drove back to La Jolla from
-                  Irvine.
-                </h6>
-              </div>
-            </div>
+            <Logs :projects="projects" />
           </div>
         </div>
         <div class="bottom">
@@ -253,12 +204,14 @@
 
 <script>
 import Tasks from "./Tasks.vue";
+import Logs from "./Logs.vue";
 import axios from "axios";
 
 export default {
   name: "TaskMan",
   components: {
-    Tasks
+    Tasks,
+    Logs,
   },
   props: {
     projectsProp: Array,
@@ -367,6 +320,38 @@ export default {
       }
 
       // get all logs in each project
+      const logs = JSON.parse(project.logs);
+      for (const key in logs) {
+        const id = logs[key];
+
+        axios
+          .get("http://taskman.hanaroenterprise.com/api/getlog.php", {
+            params: {
+              id: id
+            }
+          })
+          .then(function(response) {
+            var log= response.data;
+
+            // add this project to the list of projects
+            if (log != 404) {
+              // add this task to the list of projects
+              taskman.projects[n].logs.push({
+                date: log.date,
+                text: log.text,
+                id: log.id,
+                dateS: new Date(log.date),
+                project_id: log.project_id
+              });
+
+              // order by date
+              taskman.projects[n].logs.sort((a, b) => a.dateS - b.dateS);
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
 
       // get all the users in each project
       const users = JSON.parse(project.users);
@@ -697,6 +682,8 @@ export default {
 
           // make new category
           tasklist.projects.push({
+            isFocused: false,
+            logs: [],
             title: tasklist.category,
             id: project_index,
             users: [tasklist.username],
@@ -807,6 +794,7 @@ img {
   justify-content: flex-start;
   align-items: center;
   transform: translateY(8px);
+  z-index: -10;
 }
 
 .des-wrap {
@@ -822,6 +810,7 @@ img {
   border: 2px solid black;
   height: 155px;
   width: 200px;
+
 }
 
 textarea {
@@ -830,7 +819,6 @@ textarea {
   width: 175px;
   height: 245px;
   font-family: "Source Code Pro", monospace;
-    background: white;
   color: black;
 }
 
@@ -959,27 +947,6 @@ h4 {
   margin-left: 10px;
 }
 
-h6 {
-  font-weight: 400;
-  margin: 0;
-  font-size: 12px;
-  margin-left: 10px;
-}
-
-.day-wrap {
-  display: flex;
-  flex-direction: row;
-  padding-bottom: 10px;
-}
-
-.proj-wrap {
-  width: 250px;
-}
-
-.proj-wrap:hover {
-  background: #dbdcd7;
-}
-
 #logout-wrap {
   margin-left: auto;
   height: 17px;
@@ -1073,7 +1040,6 @@ h6 {
   white-space: nowrap;
   overflow-wrap: normal;
   overflow-x: hidden;
-    background: white;
 
 }
 
@@ -1108,4 +1074,5 @@ h6 {
   height: 37px;
   width: 80px;
 }
+
 </style>

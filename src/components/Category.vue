@@ -131,14 +131,12 @@ img:hover {
 }
 
 .bonus {
-  border: 2px solid white;
+  border: 2px solid black;
   position: fixed;
-  z-index: 10;
   background: white;
   padding: 5px;
   text-align: center;
   visibility: hidden;
-  overflow: visible;
 }
 
 .bonus-wrap {
