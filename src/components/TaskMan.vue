@@ -166,7 +166,7 @@
 
         <div class="tasklist-wrap">
           <div class="tasks">
-            <Logs :projects="projects" />
+            <Logs :projects="projects" :changeLog='changeLog'/>
           </div>
         </div>
         <div class="bottom">
@@ -427,6 +427,16 @@ export default {
           console.log(error);
         });
         
+    },
+    changeLog(id, text) {
+      for(var proj of this.projects) {
+        for(var log of proj.logs) {
+          if(log.id == id) {
+            log.text = text;
+            break;
+          }
+        }
+      }
     },
     refresh() {
       if (this.hasChanges) {

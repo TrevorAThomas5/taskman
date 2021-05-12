@@ -1,10 +1,11 @@
 <template>
     <div>
-        <h5>{{date}}</h5>
+        <h5>------ {{date}} ------</h5>
         <div class='projects-wrap'>
         <div class='project' v-for='(proj, key) in byProject' :key='proj.id'>
                 <h6>{{key}}</h6>
-                <Log v-for='log in proj.logs' :key='log.id' :text='log.text' />
+                <Log v-for='log in proj.logs' :key='log.id' :text='log.text' :id='log.id' 
+                :changeLog='changeLog' />
         </div>
         </div>
     </div>
@@ -21,6 +22,7 @@ export default {
   props: {
       date: String,
       logs: Array,
+      changeLog: Function,
   },
   data: function() {
     return {};
@@ -55,9 +57,10 @@ export default {
 <style scoped>
 
 h5 {
+    text-align: center;
     font-size: 16px;
     margin: 0;
-    margin-left: 10px;
+    margin-bottom: 10px;
 }
 
 h6 {
