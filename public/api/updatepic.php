@@ -15,27 +15,12 @@ if(!$con) {
 }
 
 // construct query
-$id = $_GET['id'];
+$id  = $_GET['id'];
+$URL = $_GET['URL'];
 
-$stmt = $con->prepare('SELECT * FROM logs WHERE id=?');
-$stmt->bind_param('i', $id);
+$stmt = $con->prepare('UPDATE users SET picture=? WHERE id=?');
+$stmt->bind_param('si', $URL, $id);
 $stmt->execute();
-$result = $stmt->get_result();
-
-if(!$result) {
-    echo 404;
-    die(mysqli_error($con));
-}
-else {
-  
-    $data = mysqli_fetch_array($result);
-    
-    if($data)
-        echo json_encode($data);
-    else
-        echo 404;
-
-}
 
 $con->close();
 

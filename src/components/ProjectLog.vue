@@ -5,7 +5,8 @@
         <div class='project' v-for='(proj, key) in byProject' :key='proj.id'>
                 <h6>{{key}}</h6>
                 <Log v-for='log in proj.logs' :key='log.id' :text='log.text' :id='log.id' 
-                :changeLog='changeLog' />
+                :changeLog='changeLog' :addLog='addLog' :projectid='proj.id'  :creatorid='creatorid' 
+                :selectTask='selectTask' />
         </div>
         </div>
     </div>
@@ -23,6 +24,9 @@ export default {
       date: String,
       logs: Array,
       changeLog: Function,
+      addLog: Function,
+      creatorid: Number,
+      selectTask: Function
   },
   data: function() {
     return {};

@@ -7,8 +7,9 @@
       class="textarea"
       role="textbox"
       contenteditable
-      >{{ text }}</span
-    >
+            v-on:click='selectProj'
+
+      >{{ text }}</span>
   </div>
 </template>
 
@@ -22,23 +23,36 @@ export default {
     text: String,
     id: Number,
     changeLog: Function,
+    projectid: Number,
+    addLog: Function,
+    creatorid: Number,
+    selectTask: Function,
   },
   data: function() {
     return {
       textHeight: "",
       hasChanges: false,
-      textData: ""
+      textData: "",
+      needsPush: false,
     };
   },
   created: function() {
     window.setInterval(this.refreshLog, 1000);
     this.textData = this.text;
+
+    // if this is a log not on the database
+    if(this.id <= -1) {
+      this.needsPush = true;
+    }
   },
   beforeDestroy: function() {
     // update top level
     this.changeLog(this.id, this.textData);
   },
   methods: {
+    selectProj: function() {
+        this.selectTask(-1, this.projectid);
+    },
     textChange() {
       this.textData = this.$refs.editable.innerText;
       this.hasChanges = true;
@@ -46,9 +60,36 @@ export default {
     refreshLog() {
       if (this.hasChanges) {
         this.hasChanges = false;
+        var log = this;
+
+        if(this.needsPush) {
+          this.needsPush = false;
+          var today = new Date();
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0');
+          var yyyy = today.getFullYear();
+          today = yyyy + '-' + mm + '-' + dd;
+
+          axios
+          .get("http://taskman.hanaroenterprise.com/api/addlog.php", {
+            params: {
+              text: log.textData,
+              date: today,
+              creatorid: log.creatorid,
+              project_id: log.projectid,
+            }
+          })
+          .then(function(response) {
+            console.log(response);
+            log.addLog(log.id, response.data, log.textData, log.projectid, today);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+          return;
+        }
 
         // update database
-        var log = this;
         axios
           .get("http://taskman.hanaroenterprise.com/api/updatelog.php", {
             params: {

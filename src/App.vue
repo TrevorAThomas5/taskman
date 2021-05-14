@@ -10,6 +10,9 @@
       :userid="userid"
       :logout="logout"
       :username='username'
+      :userDescription='userDescription'
+      :userPicture='userPicture'
+      :friends='friends'
     />
   </div>
 </template>
@@ -34,6 +37,10 @@ export default {
       userid: 0,
       projectsLoaded: 0,
       username: '',
+      userPicture: '',
+      userDescription: '',
+      friends: [],
+      friendsLoaded: 0,
     };
   },
   methods: {
@@ -43,18 +50,64 @@ export default {
     logout() {
       this.projectsProp = [];
       this.projectsLoaded = 0;
+      this.friendsLoaded = 0;
       this.userid = 0;
+      this.userPicture = '';
+      this.userDescription = '';
+      this.friendIds = [];
+      this.friends = [];
       this.page = 'login';
     },
     loginClick(userData) {
       // set userid
       this.userid = userData.id;
       this.username = userData.username;
+      this.userPicture = userData.picture;
+      this.userDescription = userData.description;
+      this.friendIds  = JSON.parse(userData.friends);
 
       // get the user's projects
       var projectsProp = this.projectsProp;
       var app = this;
       const projects = JSON.parse(userData.projects);
+
+      // if all the friends have been gotten or all the projects have been gotten
+      var oneDone = false;
+
+      if (projects.length <= 0 && app.friendIds.length <= 0)
+        app.page = 'main';
+
+      if (projects.length <= 0 || app.friendIds.length <= 0)
+        oneDone= true;
+
+      // get all the user's friends
+      for (const id of this.friendIds) {
+        axios
+          .get("http://taskman.hanaroenterprise.com/api/getuser.php", {
+            params: {
+              id: id
+            }
+          })
+          .then(function(response) {
+            var username = response.data;
+            if (username != 404) {
+              // add this user to the list of users for this project
+              app.friends.push(username)
+              app.friendsLoaded++;
+            }
+            if(app.friendsLoaded == app.friendIds.length && oneDone) {
+              app.friendsLoaded = 0;
+              app.projectsLoaded = 0;
+              app.page = 'main';
+            }
+            else if(app.friendsLoaded == app.friendIds.length) {
+              oneDone = true;
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
 
       // if the user has no projects
       if (projects.length <= 0) app.page = 'main';
@@ -75,10 +128,14 @@ export default {
               projectsProp.push(project);
               app.projectsLoaded++;
             }
-            if (app.projectsLoaded == Object.keys(projects).length) {
+            if (app.projectsLoaded == Object.keys(projects).length && oneDone) {
               // go to the main application page
-              app.page = 'main';
+              app.friendsLoaded = 0;
               app.projectsLoaded = 0;
+              app.page = 'main';
+            }
+            else if(app.projectsLoaded == Object.keys(projects).length) {
+              oneDone = true;
             }
           })
           .catch(function(error) {

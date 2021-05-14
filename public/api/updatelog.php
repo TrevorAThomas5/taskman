@@ -16,26 +16,14 @@ if(!$con) {
 
 // construct query
 $id = $_GET['id'];
+$text = $_GET['text'];
 
-$stmt = $con->prepare('SELECT * FROM logs WHERE id=?');
-$stmt->bind_param('i', $id);
+$stmt = $con->prepare('UPDATE logs SET text=? WHERE id=?');
+$stmt->bind_param('si', $text, $id);
 $stmt->execute();
+
 $result = $stmt->get_result();
-
-if(!$result) {
-    echo 404;
-    die(mysqli_error($con));
-}
-else {
-  
-    $data = mysqli_fetch_array($result);
-    
-    if($data)
-        echo json_encode($data);
-    else
-        echo 404;
-
-}
+echo $result;
 
 $con->close();
 

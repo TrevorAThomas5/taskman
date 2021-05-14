@@ -28,7 +28,7 @@
           :focusedOn='task.focusedOn' :dateS='task.dateS' :project_id="task.project_id"/>
     </div>
     <div v-else>
-      <h6>There are currently no tasks for this project.</h6>
+      <h6>- There are currently no tasks for this project.</h6>
     </div>
 </div>
 </div>

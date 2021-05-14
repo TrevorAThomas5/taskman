@@ -1,25 +1,14 @@
 <template>
   <div>
-    <h5>------ Today ------</h5>
-    <div class="projects-wrap">
-      <div class="project" v-for="proj in projects" :key="proj.id">
-        <h6>{{proj.title}}</h6>
-          <span
-        ref="editable"
-        v-on:input="textChange"
-        spellcheck="false"
-        class="textarea"
-        role="textbox"
-        contenteditable
-        >{{ text }}</span>
-      </div>
-    </div>
     <ProjectLog
       v-for="(val, key) in byDate"
       :key="key"
       :date="key"
       :logs="val"
       :changeLog="changeLog"
+      :addLog="addLog"
+      :creatorid="creatorid"
+      :selectTask='selectTask'
     />
   </div>
 </template>
@@ -30,11 +19,14 @@ import ProjectLog from "./ProjectLog.vue";
 export default {
   name: "Logs",
   components: {
-    ProjectLog
+    ProjectLog,
   },
   props: {
     projects: Array,
-    changeLog: Function
+    changeLog: Function,
+    creatorid: Number,
+    addLog: Function,
+    selectTask: Function,
   },
   data: function() {
     return {};

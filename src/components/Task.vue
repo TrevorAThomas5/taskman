@@ -1,7 +1,6 @@
 <template>
 <div class='task-wrap' v-on:click='selectMe' :style='focused'>
-    <input v-model='cross' @change='checked' type='checkbox' >
-    <h6 id='title' :style='crossed'>{{this.title}}</h6>
+    <h6 id='title'>- {{this.title}}</h6>
     <div id='edit-wrap' class='bonus-wrap'>
     <img id='edit' src='/pen.svg'>
     <div id='edit-bonus' class='bonus'>
@@ -156,7 +155,7 @@ h6 {
     font-weight: 300;
     margin: 0;
     font-size: 12px;
-    margin-left: 5px;
+    margin-left: 10px;
 }
 
 input {

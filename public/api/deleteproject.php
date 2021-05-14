@@ -25,6 +25,7 @@ $result = $stmt->get_result();
 
 $project_data = mysqli_fetch_array($result);
 $tasks = json_decode($project_data['tasks']);
+$logs = json_decode($project_data['logs']);
 $users = json_decode($project_data['users']);
 
 // delete project
@@ -36,6 +37,13 @@ $stmt->execute();
 foreach($tasks as $task_id) {
     $stmt = $con->prepare('DELETE FROM tasks WHERE id=?');
     $stmt->bind_param('i', $task_id);
+    $stmt->execute();
+}
+
+// delete all logs in project
+foreach($logss as $log_id) {
+    $stmt = $con->prepare('DELETE FROM logs WHERE id=?');
+    $stmt->bind_param('i', $log_id);
     $stmt->execute();
 }
 

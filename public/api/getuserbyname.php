@@ -15,10 +15,10 @@ if(!$con) {
 }
 
 // construct query
-$id = $_GET['id'];
+$username = $_GET['username'];
 
-$stmt = $con->prepare('SELECT * FROM logs WHERE id=?');
-$stmt->bind_param('i', $id);
+$stmt = $con->prepare('SELECT * FROM users WHERE username=?');
+$stmt->bind_param('s', $username);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -30,6 +30,10 @@ else {
   
     $data = mysqli_fetch_array($result);
     
+    // null out password
+    $data['password'] = "XXX";
+    $data[3] = "XXX";
+
     if($data)
         echo json_encode($data);
     else
