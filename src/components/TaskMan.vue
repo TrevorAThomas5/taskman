@@ -856,7 +856,8 @@ export default {
                 text: text,
                 id: new_id,
                 dateS: new Date(date),
-                project_id: project_id
+                project_id: project_id,
+                creatorid: this.userid,
               };
               return;
             }
@@ -1270,7 +1271,8 @@ export default {
                 text: "",
                 id: -project_index,
                 dateS: new Date(today),
-                project_id: project_index
+                project_id: project_index,
+                creatorid: tasklist.userid,
               }
             ],
             title: tasklist.category,
