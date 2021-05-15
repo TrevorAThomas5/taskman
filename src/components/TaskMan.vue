@@ -46,6 +46,8 @@
           </div>
         </div>
 
+        
+
         <div class="tasklist-wrap">
           <div class="input-bar">
             <input v-model="name" placeholder="Task Name..." type="text" />
@@ -62,7 +64,25 @@
             </div>
           </div>
 
-          <div class="tasks">
+
+        <div style='padding: 10px; text-align: left;' v-if='this.projects.length == 0'>
+          <h5>Hello and welcome to TaskMan!</h5>
+          <h5 style='margin-top: 10px;'>This project was built by Trevor Thomas for IT Action Inc to help improve employee 
+              cooridination within the company.</h5>
+          <h5 style='margin-top: 10px;'>But the good news is, you can use it too!</h5>
+          <h5 style='margin-top: 10px;'>To begin, enter a task title, project title, and date into the top bar.
+              Then, click the 'Add a new task.' button to create a new project with this as its first task.
+              Any following time you add a task with this project's name, the new task will be added to this
+              project.</h5>
+          <h5 style='margin-top: 10px;'>Give this task a description by clicking on it and typing your
+              description into the top right box. You can also add collaborators to any of your projects by
+              first selecting the project and then clicking the add user button in the bottom right box.
+              Any collaborators you've added will be able to see, edit, and add to the project's tasklist.</h5>
+          <h5 style='margin-top: 10px;'>Thank you for using TaskMan, and contact me at TrevorAThomas5@gmail.com</h5>
+
+
+        </div>
+          <div v-else class="tasks">
             <Tasks
               :tasks="projects"
               :check="check"
@@ -71,7 +91,11 @@
               :deleteProject="deleteProject"
             />
           </div>
+
+
         </div>
+
+
 
         <div class="bottom">
 
@@ -89,6 +113,7 @@
           <h5>Description</h5>
           <div class="des-wrap">
             <textarea
+              v-if='(this.projects.length != 0) && (this.focusedId != 0)'
               spellcheck="false"
               placeholder="Type here to give this task a description..."
               v-model="desc"
@@ -184,7 +209,7 @@
             >
               <h3>{{ this.friends.length }} friends</h3>
             </div>
-            <h3>{{ this.projectsProp.length }} projects</h3>
+            <h3>{{ this.projects.length }} projects</h3>
           </div>
         </div>
 
@@ -288,7 +313,7 @@
           <div class="center-profile">
             <h2>{{ this.othername }}</h2>
             <img
-              style="cursor: pointer; object-fit: cover; border: 2px solid black; width: 200px; height:200px;"
+              style="object-fit: cover; border: 2px solid black; width: 200px; height:200px;"
               :src="otherpicture"
             />
             <div
@@ -420,7 +445,10 @@
         </div>
 
         <div class="tasklist-wrap">
-          <div class="tasks">
+          <div style='padding: 10px;' v-if='this.projects.length == 0'>
+            <h5>Add a project on the Tasks page to get started.</h5>
+          </div>
+          <div v-else class="tasks">
             <Logs
               :selectTask="selectTask"
               :addLog="addLog"
@@ -648,7 +676,8 @@ export default {
         text: "",
         id: -project.id,
         dateS: new Date(today),
-        project_id: project.id
+        project_id: project.id,
+        creatorid: this.userid,
       });
 
       // get all logs in each project
@@ -672,14 +701,16 @@ export default {
               for (var i = 0; i < taskman.projects[n].logs.length; i++) {
                 if (
                   log.date === today &&
-                  taskman.projects[n].logs[i].id <= -1
+                  taskman.projects[n].logs[i].id <= -1 &&
+                  log.creatorid == taskman.userid
                 ) {
                   taskman.projects[n].logs[i] = {
                     date: log.date,
                     text: log.text,
                     id: log.id,
                     dateS: new Date(log.date),
-                    project_id: log.project_id
+                    project_id: log.project_id,
+                    creatorid: log.creatorid,
                   };
                   taskman.projects[n].logs.sort((a, b) => b.dateS - a.dateS);
                   return;
@@ -691,7 +722,9 @@ export default {
                 text: log.text,
                 id: log.id,
                 dateS: new Date(log.date),
-                project_id: log.project_id
+                project_id: log.project_id,
+                creatorid: log.creatorid,
+
               });
 
               // order by date
@@ -771,6 +804,8 @@ export default {
           if (userData != 404) {
             // switch to the page
             if(userData.username == taskman.username)  {
+              if(taskman.list != 'other' && taskman.list != 'profile')
+                taskman.prev = taskman.list;
               taskman.list = 'profile';
               return;
             }
@@ -1129,15 +1164,39 @@ export default {
     addCollaborator() {
       this.addingCollaborator = !this.addingCollaborator;
     },
+    isValidDate(dateString) {
+      var regEx = /^\d{4}-\d{2}-\d{2}$/;
+      if(!dateString.match(regEx)) return false;  // Invalid format
+      var d = new Date(dateString);
+      var dNum = d.getTime();
+      if(!dNum && dNum !== 0) return false; // NaN value, Invalid date
+      return d.toISOString().slice(0,10) === dateString;
+    },
     addTask() {
-      // check for blank input
-      if (this.name === "" || this.category === "" || this.date === "") return;
+      // bad entry handling
+      if (this.name === "") {
+        alert("Please enter a valid task name.");
+        return;
+      }
+
+      if (this.category === "") {
+        alert("Please enter a valid project name.");
+        return;
+      }
+
+      if (this.date === "" || !this.isValidDate(this.date)) {
+        alert("Please enter a valid date of the form YYYY-MM-DD.");
+        return;
+      }
 
       // check for existing category
       for (var cat of this.projects) {
         if (cat.title == this.category) {
           for (const task of cat.tasks) {
-            if (this.name == task.title) return;
+            if (this.name == task.title) {
+              alert("Please enter a task name that doesn't already exist in this project.");
+              return;
+            }
           }
 
           // push to database

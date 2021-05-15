@@ -72,7 +72,6 @@ h6 {
 
 .project {
         width: 50%;
-        margin-bottom: 10px;
 
 }
 
@@ -87,7 +86,6 @@ h5 {
     text-align: center;
     font-size: 16px;
     margin: 0;
-    margin-bottom: 10px;
 }
 
 .textarea:focus {

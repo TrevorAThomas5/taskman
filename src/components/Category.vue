@@ -7,13 +7,8 @@
 
       
 
+    
     <div id='edit-wrap' class='bonus-wrap'>
-        <img :style='imgFocus' id='pen' src='pen.svg' >
-        <div :style='tooltip' id='edit-bonus' class='bonus'>
-            <h5 class='bonus-text'>Edit this project.</h5>
-        </div>
-    </div>
-    <div id='delete-wrap' class='bonus-wrap'>
 
       <img :style='imgFocus' id='skull' src='skull.svg' v-on:click='deleteClick'>
       <div :style='tooltip' id='delete-bonus' class='bonus'>
@@ -166,6 +161,7 @@ img:hover {
 
 #edit-wrap {
     margin-left: auto;
+    margin-right: 10px;
 }
 
 #edit-bonus {

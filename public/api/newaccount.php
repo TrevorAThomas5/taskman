@@ -26,7 +26,7 @@ $result = $stmt->get_result();
 // if this username isn't already taken
 if(mysqli_num_rows($result) < 1) {
     // create new user
-    $stmt = $con->prepare("INSERT INTO users (username, password, projects, friends) VALUES (?, ?, '[]', '[]')");
+    $stmt = $con->prepare("INSERT INTO users (username, password, projects, friends) VALUES (?, ?, '[]', '[1]')");
     $stmt->bind_param('ss', $username, $password);
     $stmt->execute();
 

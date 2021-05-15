@@ -1,16 +1,11 @@
 <template>
 <div class='task-wrap' v-on:click='selectMe' :style='focused'>
     <h6 id='title'>- {{this.title}}</h6>
-    <div id='edit-wrap' class='bonus-wrap'>
-    <img id='edit' src='/pen.svg'>
-    <div id='edit-bonus' class='bonus'>
-            <h5>Edit this task.</h5>
-        </div>
-    </div>
-
-    <div class='bonus-wrap'>
+    
+    
+    <div id='delete-wrap' class='bonus-wrap'>
         <img v-on:click='deleteMe' id='trash' src='/trash.svg'>
-        <div id='delete-bonus' class='bonus'>
+        <div id='edit-bonus' class='bonus'>
             <h5>Delete this task.</h5>
         </div>
     </div>
@@ -212,6 +207,7 @@ img:hover {
 
 .bonus-wrap {
   position: relative;
+  margin-left: auto;
 }
 
 .bonus-wrap:hover .bonus {
