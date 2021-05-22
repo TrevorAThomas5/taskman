@@ -1308,7 +1308,6 @@ export default {
   height: 450px;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(15px);
 }
 
 .tasks {
@@ -1692,8 +1691,8 @@ h4 {
 
 .center-profile {
   position: absolute;
-  right: 250px;
-  top: 225px;
+  right: 475px;
+  top: 250px;
   transform: translate(50%, -55%);
   text-align: center;
   display: flex;
